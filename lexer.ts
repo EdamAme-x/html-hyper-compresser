@@ -72,6 +72,9 @@ export function HTMLLexer(htmlString: string): Tokens {
       }
 
       if (char === "/" && peek() === ">") {
+        if (peek(-1) === "<")
+          throw new Error("Unexpected end of html attribute");
+
         next();
         tokensArray.push({
           type: "tag-self-closing-right-bracket",
@@ -100,16 +103,25 @@ export function HTMLLexer(htmlString: string): Tokens {
           tokensArray.push({ type: "attribute-value", value: value });
         } else {
           const nextChar = next();
-          if (nextChar !== '>' && nextChar !== ' ' && (nextChar !== '/' && peek() !== '>')) {
+          if (
+            nextChar !== ">" &&
+            nextChar !== " " &&
+            nextChar !== "/" &&
+            peek() !== ">"
+          ) {
             value += nextChar;
             while (true) {
               const nextChar = next();
-              if (nextChar === ' ' || nextChar === '>' || (nextChar === '/' && peek() === '>')) {
+              if (
+                nextChar === " " ||
+                nextChar === ">" ||
+                (nextChar === "/" && peek() === ">")
+              ) {
                 break;
               }
               value += nextChar;
             }
-          }else {
+          } else {
             value = "";
           }
           tokensArray.push({ type: "attribute-value", value });
@@ -139,8 +151,7 @@ export function HTMLLexer(htmlString: string): Tokens {
         while (/[a-zA-Z_-]/.test(peek())) {
           tagName += next();
         }
-        
-        if (tagName.length === 0) throw new Error("Unexpected end of html tag");
+
         tokensArray.push({ type: "tag-name", value: tagName });
         attributesParser();
 
@@ -160,6 +171,8 @@ export function HTMLLexer(htmlString: string): Tokens {
         tokensArray.push({ type: "tag-right-bracket", value: ">" });
         continue;
       } else if (nextChar === ">") {
+        if (peek(-1) === "<") throw new Error("Unexpected end of html tag");
+
         tokensArray.push({ type: "tag-right-bracket", value: ">" });
         next();
         continue;

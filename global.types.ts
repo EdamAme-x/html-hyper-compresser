@@ -3,7 +3,7 @@ export type TagTypes =
   | "tag-name" // name
   | "tag-right-bracket" // >
   | "tag-closing-left-bracket" // </
-  | "tag-self-closing-right-bracket" // />
+  | "tag-self-closing-right-bracket"; // />
 
 export type AttributeTypes =
   | "attribute-name" // name

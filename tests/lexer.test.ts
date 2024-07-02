@@ -87,17 +87,15 @@ test("Lexer works", () => {
 });
 
 const exampleDatas = [
-    "a",
-    "",
-    "<div class=\"test\" />",
-    "<div a='b' >",
-    "<div a=1 >",
-]
+  "a",
+  "",
+  '<div class="test" />',
+  "<div a='b' >",
+  "<div a=1 >",
+];
 
 test("Lexer works 2", () => {
   for (const data of exampleDatas) {
     expect(HTMLLexer(data)).not.toBeNull();
   }
-
-  console.log(HTMLLexer("a<a>b"));
-})
+});
