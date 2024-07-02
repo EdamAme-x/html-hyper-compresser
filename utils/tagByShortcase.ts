@@ -124,7 +124,7 @@ const TagByShortcase = {
 
 const TagByShortcaseKeys = Object.keys(TagByShortcase);
 
-export function parseTabByShortcase(type: string): string {
+export function parseTagByShortcase(type: string): string {
   if (TagByShortcaseKeys.includes(type)) {
     return TagByShortcase[type];
   }
