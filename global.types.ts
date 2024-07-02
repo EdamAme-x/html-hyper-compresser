@@ -20,3 +20,9 @@ export type Token = {
 };
 
 export type Tokens = Token[];
+
+export type HTMLTree = {
+  name: string;
+  attributes: Record<string, string>;
+  children: HTMLTree[];
+}

@@ -82,8 +82,8 @@ const exampleParsedData = [
 ];
 
 test("Lexer works", () => {
-  const lex = HTMLLexer(exampleData);
-  expect(lex).toEqual(exampleParsedData);
+  const tokens = HTMLLexer(exampleData);
+  expect(tokens).toEqual(exampleParsedData);
 });
 
 const exampleDatas = [
