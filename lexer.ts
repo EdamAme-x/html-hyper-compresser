@@ -185,7 +185,7 @@ export function HTMLLexer(htmlString: string): Tokens {
       } else {
         throw new Error("Unexpected character: <" + nextChar);
       }
-    } else if (!!char) {
+    } else if (char) {
       tokensArray.push({ type: "content", value: char });
       continue;
     } else {
