@@ -156,7 +156,7 @@ export function HTMLLexer(htmlString: string): Tokens {
         attributesParser();
 
         continue;
-      } else if (nextChar === "/" && /[a-zA-Z_-]/.test(peek(2) || "")) {
+      } else if (nextChar === "/" && /[a-zA-Z_-]/.test(peek(2))) {
         tokensArray.push({
           type: "tag-closing-left-bracket",
           value: "</",

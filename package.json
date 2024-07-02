@@ -1,7 +1,6 @@
 {
   "name": "html-hyper-compresser",
   "module": "index.ts",
-  "type": "module",
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -11,5 +10,9 @@
   },
   "scripts": {
     "test": "vitest --run ./tests/**/*"
+  },
+  "type": "module",
+  "dependencies": {
+    "mitata": "^0.1.11"
   }
 }
