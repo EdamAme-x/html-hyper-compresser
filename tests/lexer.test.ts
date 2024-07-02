@@ -98,4 +98,6 @@ test("Lexer works 2", () => {
   for (const data of exampleDatas) {
     expect(HTMLLexer(data)).not.toBeNull();
   }
+
+  console.log(HTMLLexer("a<a>b"));
 })

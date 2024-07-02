@@ -139,6 +139,8 @@ export function HTMLLexer(htmlString: string): Tokens {
         while (/[a-zA-Z_-]/.test(peek())) {
           tagName += next();
         }
+        
+        if (tagName.length === 0) throw new Error("Unexpected end of html tag");
         tokensArray.push({ type: "tag-name", value: tagName });
         attributesParser();
 
