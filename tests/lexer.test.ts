@@ -106,7 +106,8 @@ const exampleWrongDatas = [
   '<div </> class="test" />',
   "<div <<< a='b' >",
   "<<div a=1 >",
-  "<a>s</>"
+  "<a>s</>",
+  "<s",
 ];
 
 test("Lexer works 3", () => {
