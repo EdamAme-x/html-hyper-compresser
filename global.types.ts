@@ -4,8 +4,6 @@ export type TagTypes =
   | "tag-right-bracket" // >
   | "tag-closing-left-bracket" // </
   | "tag-self-closing-right-bracket" // />
-  | "fragment-open" // <>
-  | "fragment-close"; // </>
 
 export type AttributeTypes =
   | "attribute-name" // name

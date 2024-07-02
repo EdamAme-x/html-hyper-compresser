@@ -11,11 +11,13 @@ export function HTMLLexer(htmlString: string): Tokens {
 
   function back(step: number = 1) {
     pointer -= step;
-    return htmlString[pointer] || null;
+    const char = htmlString[pointer];
+    if (!char) throw new Error("Unexpected end of html string");
+    return char;
   }
 
   function skipEmpty() {
-    while (/\s/.test(peek() || "_")) {
+    while (/\s/.test(peek())) {
       next();
     }
     return peek();
@@ -52,7 +54,7 @@ export function HTMLLexer(htmlString: string): Tokens {
         string += encodeString(nextChar);
         continue;
       }
-      if (char === '"') {
+      if (char === '"' || char === "'") {
         break;
       }
       string += char;
@@ -83,7 +85,7 @@ export function HTMLLexer(htmlString: string): Tokens {
       let name = char;
       let value = "";
 
-      while (/[a-zA-Z_]/.test(peek() || "")) {
+      while (/[a-zA-Z_]/.test(peek())) {
         name += next();
       }
 
@@ -92,14 +94,28 @@ export function HTMLLexer(htmlString: string): Tokens {
       if (peek() === "=") {
         next();
         tokensArray.push({ type: "attribute-assign", value: "=" });
-        if (peek() === '"') {
+        if (peek() === '"' || peek() === "'") {
           next();
           value = stringParser();
           tokensArray.push({ type: "attribute-value", value: value });
         } else {
-          throw new Error("Unexpected end of html attribute");
+          const nextChar = next();
+          if (nextChar !== '>' && nextChar !== ' ' && (nextChar !== '/' && peek() !== '>')) {
+            value += nextChar;
+            while (true) {
+              const nextChar = next();
+              if (nextChar === ' ' || nextChar === '>' || (nextChar === '/' && peek() === '>')) {
+                break;
+              }
+              value += nextChar;
+            }
+          }else {
+            value = "";
+          }
+          tokensArray.push({ type: "attribute-value", value });
         }
       } else {
+        next();
         tokensArray.push({ type: "attribute-assign", value: "=" });
         tokensArray.push({ type: "attribute-value", value: "" });
         continue;
@@ -117,32 +133,24 @@ export function HTMLLexer(htmlString: string): Tokens {
       const nextChar = skipEmpty();
       if (!nextChar) throw new Error("Unexpected end of html tag");
 
-      if (nextChar === ">") {
-        tokensArray.push({ type: "fragment-open", value: "<>" });
-        next();
-        continue;
-      } else if (nextChar === "/" && peek(2) === ">") {
-        tokensArray.push({ type: "fragment-close", value: "</>" });
-        next(2);
-        continue;
-      } else if (/[a-zA-Z_]/.test(nextChar)) {
+      if (/[a-zA-Z_-]/.test(nextChar)) {
         tokensArray.push({ type: "tag-left-bracket", value: "<" });
         let tagName = "";
-        while (/[a-zA-Z_]/.test(peek() || "")) {
+        while (/[a-zA-Z_-]/.test(peek())) {
           tagName += next();
         }
         tokensArray.push({ type: "tag-name", value: tagName });
         attributesParser();
 
         continue;
-      } else if (nextChar === "/" && /[a-zA-Z_]/.test(peek(2) || "")) {
+      } else if (nextChar === "/" && /[a-zA-Z_-]/.test(peek(2) || "")) {
         tokensArray.push({
           type: "tag-closing-left-bracket",
           value: "</",
         });
         next();
         let tagName = "";
-        while (/[a-zA-Z_-]/.test(peek() || "")) {
+        while (/[a-zA-Z_-]/.test(peek())) {
           tagName += next();
         }
         tokensArray.push({ type: "tag-name", value: tagName });
@@ -161,7 +169,7 @@ export function HTMLLexer(htmlString: string): Tokens {
         throw new Error("Unexpected character: <" + nextChar);
       }
     } else if (!!char) {
-      tokensArray.push({ type: "content", value: char || "" });
+      tokensArray.push({ type: "content", value: char });
       continue;
     } else {
       break;
