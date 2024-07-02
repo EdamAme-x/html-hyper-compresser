@@ -99,3 +99,18 @@ test("Lexer works 2", () => {
     expect(HTMLLexer(data)).not.toBeNull();
   }
 });
+
+const exampleWrongDatas = [
+  "a<",
+  "<><>",
+  '<div </> class="test" />',
+  "<div <<< a='b' >",
+  "<<div a=1 >",
+  "<a>s</>"
+];
+
+test("Lexer works 3", () => {
+  for (const data of exampleWrongDatas) {
+    expect(() => HTMLLexer(data)).toThrow();
+  }
+});

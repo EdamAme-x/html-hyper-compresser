@@ -69,6 +69,8 @@ export function HTMLLexer(htmlString: string): Tokens {
       if (char === ">") {
         tokensArray.push({ type: "tag-right-bracket", value: ">" });
         break;
+      }else if (char === "<") {
+        throw new Error("Unexpected end of html attribute");
       }
 
       if (char === "/" && peek() === ">") {
